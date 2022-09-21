@@ -1,17 +1,17 @@
-﻿using System;
+﻿using laba1_test.Shapes;
+using System;
 using System.Drawing;
 
-namespace laba1_test
+namespace laba1_test.Transforms
 {
-    public class ShapeTransformer
+    public class ShapeMover : IShapeTransformer
     {
-        public ShapeTransformer(Shape shape, int dx, int angle, int sign)
+        public ShapeMover(IShape shape, int dx, int angle)
         {
             _dx = dx;
-            _tg = Math.Tan(angle);
+            _tg = Math.Tan(angle * Math.PI / 180);
             _dy = Convert.ToInt32(_tg * Math.Abs(dx));
 
-            _sign = sign;
             Shape = shape;
         }
 
@@ -28,63 +28,55 @@ namespace laba1_test
             _dy = ((_dy > 0) ? 1 : -1) * Convert.ToInt32(_tg * dx);
         }
 
-        public void ChangeRadius()
+        public void Transform()
         {
-            int radius = Shape.GetRadius();
-            // Определение расстояния от центра ромба до вершин
-            if (radius == 35)
-                _sign *= -1;
-            if (radius == 5)
-                _sign *= -1;
+            Point leftTop = Shape.GetLeftTopConer();
+            int dx = 0, dy = 0;
+            int height = Shape.GetHeight(), width = Shape.GetWidth();
 
-            Shape.SetRadius(radius + 5 * _sign);
-        }
-
-        public void MoveShape()
-        {
-            Point center = Shape.GetCenter();
-            int radius = Shape.GetRadius();
-
-            if (center.X + _dx + radius > Width) // Касание правой границы
+            if (leftTop.X + _dx + width > Width) // Касание правой границы
             {
+                dx =  Width - (leftTop.X + _dx + width);
+
                 _dx *= -1;
-                center.X = Width - radius;
             }
-            else if (center.X + _dx - radius < 0) // Касание левой границы
+            else if (leftTop.X + _dx < 0) // Касание левой границы
             {
                 _dx *= -1;
-                center.X = radius;
+
+                dx = _dx - leftTop.X;
             }
             else
             {
-                center.X += _dx;
+                dx = _dx;
             }
 
-            if (center.Y + _dy - radius < 0) // Касание верхней границы
+            if (leftTop.Y + _dy + height > Height) // Касание правой границы
             {
+                dy = Height - (leftTop.Y + _dy + height);
+
                 _dy *= -1;
-                center.Y = radius;
             }
-            else if (center.Y + _dy + radius > Height) // Касание нижней границы
+            else if (leftTop.Y + _dy < 0) // Касание левой границы
             {
                 _dy *= -1;
-                center.Y = Height - radius;
+
+                dy = _dy - leftTop.Y;
             }
             else
             {
-                center.Y += _dy;
+                dy = _dy;
             }
 
-            Shape.MoveTo(center);
+            Shape.Offset(dx, dy);
         }
 
-        public Shape Shape { set; get; }
+        public IShape Shape { set; get; }
         public int Height { set; get; }
         public int Width { set; get; }
 
         private int _dx;
         private int _dy;
-        private int _sign;
         private double _tg;
     }
 }

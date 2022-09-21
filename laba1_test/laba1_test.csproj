@@ -53,10 +53,13 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="GraphicsEngine.cs" />
+    <Compile Include="Shapes\IShape.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shape.cs" />
-    <Compile Include="ShapeTransformer.cs" />
+    <Compile Include="Shapes\Rhomb.cs" />
+    <Compile Include="Transforms\IShapeTransformer.cs" />
+    <Compile Include="Transforms\ShapeColorСhanger.cs" />
+    <Compile Include="Transforms\ShapeMover.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

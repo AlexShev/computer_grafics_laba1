@@ -1,4 +1,6 @@
-﻿using System;
+﻿using laba1_test.Shapes;
+using laba1_test.Transforms;
+using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -8,57 +10,108 @@ namespace laba1_test
 {
     public partial class Form1 : Form
     {
+        private bool _started = false;
+
+
         // фигура для отрисовки
-        private Shape _shape;
-        // объект ответсвенный за трансформирования фигуры
-        private ShapeTransformer _transformer;
+        private Rhomb _shape;
+        // объект ответсвенный за перемещение фигуры
+        private ShapeMover _shapeMover;
+        // объект ответственный за перекрашивание фигуры
+        private ShapeColorСhanger _shapeColorСhanger;
         // объект для отрисовки фигуры
         private GraphicsEngine _graphicsEngine;
+
+        private Mutex _mutex = new Mutex();
 
         public Form1()
         {
             InitializeComponent();
 
-            _shape = new Shape(100, 100, 10);
-            _transformer = new ShapeTransformer(_shape, 20, 309, 1);
-            _transformer.Height = pictureBox1.Height;
-            _transformer.Width = pictureBox1.Width;
+            _shape = new Rhomb(0, 0, 100, 100);
+            _shape.LineWidth = 4;
+            _shape.FillColor = Color.RoyalBlue;
+            _shape.LineColor = Color.Black;
 
-            _graphicsEngine = new GraphicsEngine(pictureBox1.CreateGraphics());
+            _shapeMover = new ShapeMover(_shape, 10, 45);
+            _shapeMover.Height = pictureBox1.Height;
+            _shapeMover.Width = pictureBox1.Width;
 
-            comboBox1.SelectedIndex = 0;
+            _shapeColorСhanger = new ShapeColorСhanger(_shape, new Color[] {
+                Color.Red,
+                Color.Green,
+                Color.Black,
+                Color.Yellow,
+            });
+
+            new Thread(() =>
+            {
+                while (true)
+                {
+                    _shapeColorСhanger.Transform();
+                    Thread.Sleep(1000);
+                }
+            }).Start();
+
+            // надо захерачить мьютекс
+            //new Thread(() =>
+            //{
+            //    while (true)
+            //    {
+                //// Стирание фигуры заданным методом
+                //_graphicsEngine.Clear();
+
+                //// Перемещение фигуры
+                //_shapeMover.Transform();
+
+                ////Отрисовка фигуры цветом RoyalBlue
+                //_graphicsEngine.FillShape(_shape);
+                //_graphicsEngine.DrowShape(_shape);
+            //    }
+
+
+            //}).Start();
+
+            _graphicsEngine = new GraphicsEngine(new Bitmap(pictureBox1.Width, pictureBox1.Height));
+            _graphicsEngine.BackColor = Color.White;
+
+            timer1.Interval = 1000 / (SpeedBar.Value * 10);
         }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            if (comboBox1.Items.Contains(comboBox1.Text))
+            Button button = (Button)sender;
+            
+            if (!_started)
             {
                 timer1.Enabled = true;
-                comboBox1.Enabled = false;
                 
-                _graphicsEngine.Clearing();
-                _graphicsEngine.Draw(_shape, Color.RoyalBlue);
+                _graphicsEngine.Clear();
+                _graphicsEngine.SetDefalte();
+                _graphicsEngine.FillShape(_shape);
+
+                button.Text = "стоп";
+
+                _started = true;
             }
             else
             {
-                MessageBox.Show("Сначала выберите метод стирания");
+                timer1.Enabled = false;
+                button.Text = "старт";
+
+                _started = false;
             }
+
         }
 
         private void Sp_Scroll(object sender, EventArgs e)
         {
-            timer1.Interval = 1000 / SpeedBar.Value;
+            timer1.Interval = 1000 / (SpeedBar.Value * 10);
         }
 
         private void Dx_Scroll(object sender, EventArgs e)
         {
-            _transformer.SetStep(StepBar.Value);
-        }
-
-        private void StopButton_Click(object sender, EventArgs e)
-        {
-            timer1.Enabled = false;
-            comboBox1.Enabled = true;
+            _shapeMover.SetStep(StepBar.Value);
         }
 
         private void Form1_Resize(object sender, System.EventArgs e)
@@ -67,41 +120,29 @@ namespace laba1_test
             pictureBox1.Height = control.Height;
             pictureBox1.Width = control.Width - panel1.Width;
 
-            _graphicsEngine.SetGrafics(pictureBox1.CreateGraphics());
+            if (pictureBox1.Height > 0 && pictureBox1.Width > 0)
+            {
+                _graphicsEngine.Bitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+                _graphicsEngine.SetDefalte();
 
-            _transformer.Height = pictureBox1.Height;
-            _transformer.Width = pictureBox1.Width;
+                _shapeMover.Height = pictureBox1.Height;
+                _shapeMover.Width = pictureBox1.Width;
+            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             // Стирание фигуры заданным методом
-            _graphicsEngine.Clearing();
-
-            // Определение расстояния от центра ромба до вершин
-            _transformer.ChangeRadius();
+            _graphicsEngine.Clear();
 
             // Перемещение фигуры
-            _transformer.MoveShape();
+            _shapeMover.Transform();
 
             //Отрисовка фигуры цветом RoyalBlue
-            _graphicsEngine.Draw(_shape, Color.RoyalBlue);
-        }
+            _graphicsEngine.FillShape(_shape);
+            _graphicsEngine.DrowShape(_shape);
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _graphicsEngine.Clearing();
-
-            switch (comboBox1.SelectedIndex)
-            {
-                case 0:
-                    _graphicsEngine.Clearning = GraphicsEngine.ClearningMode.ScreenClear;
-                    break;
-                case 1:
-                    _graphicsEngine.Clearning = GraphicsEngine.ClearningMode.ShapeClear;
-                    break;
-            }
-            
+            pictureBox1.Image = _graphicsEngine.Bitmap;
         }
     }
 }

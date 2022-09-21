@@ -1,78 +1,112 @@
-﻿using System.Collections.Generic;
+﻿using laba1_test.Shapes;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace laba1_test
 {
-    public class GraphicsEngine
+    public class GraphicsEngine : IDisposable
     {
-        public enum ClearningMode
+        public GraphicsEngine(Bitmap bitmap)
         {
-            ScreenClear,
-            ShapeClear
+            Bitmap = bitmap;
+
+            _filledPolygon = new Stack<IShape>();
+            _linePolygon = new Stack<IShape>();
+
+            _pen = new Pen(BackColor);
+            _brush = new SolidBrush(BackColor);
         }
 
-        public GraphicsEngine(Graphics grafic)
+        public void FillShape(IShape shape)
         {
-            _grafic = grafic;
-            Clearning = ClearningMode.ScreenClear;
+            _brush.Color = shape.FillColor;
+
+            _filledPolygon.Push(shape);
+
+            //Отрисовка фигуры по заданным координатам
+            _grafic.FillPolygon(_brush, shape.GetPoints());
+        }
+
+        public void DrowShape(IShape shape)
+        {
+            _pen.Color = shape.LineColor;
+            _pen.Width = shape.LineWidth;
+
+            _linePolygon.Push(shape);
+
+            //Отрисовка фигуры по заданным координатам
+            _grafic.DrawPolygon(_pen, shape.GetPoints());
+        }
+
+        public void ClearRegion(IShape shape)
+        {
+            _brush.Color = BackColor;
             
-            _shapes = new Stack<Shape>();
+            _grafic.FillPolygon(_brush, shape.GetPoints());
         }
 
-        public void SetRegion(int h, int w)
+        public void ClearLine(IShape shape)
         {
-            _grafic.Clip = new Region(new Rectangle(0, 0, w, h));
+            _pen.Color = BackColor;
+            _pen.Width = shape.LineWidth;
+
+            _grafic.DrawPolygon(_pen, shape.GetPoints());
         }
 
-        public void SetGrafics(Graphics grafic)
+        public void Clear()
         {
-            _grafic.Dispose();
-
-            _grafic = grafic;
-        }
-
-        public void Draw(Shape shape, Color color)
-        {
-            SolidBrush brush = new SolidBrush(color);
-
-            if (Clearning != ClearningMode.ScreenClear)
+            while (_filledPolygon.Count > 0)
             {
-                _shapes.Push(shape);
+                ClearRegion(_filledPolygon.Pop());
             }
-            //Отрисовка фигуры по заданным координатам
-            _grafic.FillPolygon(brush, shape.GetPoints());
-        }
-
-        public void Draw(Shape shape)
-        {
-            SolidBrush brush = new SolidBrush(Color.White);
-
-            //Отрисовка фигуры по заданным координатам
-            _grafic.FillPolygon(brush, shape.GetPoints());
-        }
-
-        public void Clearing()
-        {
-            // Метод стирания определяется пользователем
-            switch (Clearning)
+            
+            while (_linePolygon.Count > 0)
             {
-                case ClearningMode.ScreenClear:
-                    _grafic.Clear(Color.White);
-                    break;
-                case ClearningMode.ShapeClear:
-                    while (_shapes.Count > 0)
-                    {
-                        Draw(_shapes.Pop());
-                    }
-                    break;
-                default:
-                    break;
+                ClearLine(_linePolygon.Pop());
+            }
+        }
+
+        public void SetDefalte()
+        {
+            _grafic.Clear(BackColor);
+        }
+
+        public void Dispose()
+        {
+            _grafic?.Dispose();
+            _buffer?.Dispose();
+
+            _pen?.Dispose();
+            _brush?.Dispose();
+        }
+
+        public Color BackColor { set; get; } = Color.White;
+        
+        public Bitmap Bitmap
+        {
+            set
+            {
+                _buffer = value;
+                _grafic?.Dispose();
+
+                _filledPolygon?.Clear();
+                _linePolygon?.Clear();
+
+                _grafic = Graphics.FromImage(_buffer);
+                _grafic.Clear(BackColor);
             }
 
+            get => new Bitmap(_buffer);
         }
+
+        private readonly Pen _pen;
+        private readonly SolidBrush _brush;
 
         private Graphics _grafic;
-        public ClearningMode Clearning { set; get; }
-        private readonly Stack<Shape> _shapes;
+        private readonly Stack<IShape> _filledPolygon;
+        private readonly Stack<IShape> _linePolygon;
+
+        private Bitmap _buffer;
     }
 }
