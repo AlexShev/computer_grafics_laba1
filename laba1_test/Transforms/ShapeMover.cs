@@ -4,17 +4,31 @@ using System.Drawing;
 
 namespace laba1_test.Transforms
 {
+    /// <summary>
+    /// Класс для расчитывания траектории для конкретной фигуры в заданном пространстве
+    /// </summary>
     public class ShapeMover : IShapeTransformer
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="shape">Фигура, чья координата меняется</param>
+        /// <param name="dx">Шаг по оси OX</param>
+        /// <param name="angle">угол в градусах относительно оси OX</param>
         public ShapeMover(IShape shape, int dx, int angle)
         {
             _dx = dx;
+            // расчёт изменения по Y
             _tg = Math.Tan(angle * Math.PI / 180);
             _dy = Convert.ToInt32(_tg * Math.Abs(dx));
 
             Shape = shape;
         }
 
+        /// <summary>
+        /// Изменение шага изменения
+        /// </summary>
+        /// <param name="dx">новое значение шага</param>
         public void SetStep(int dx)
         {
             // Определение шага по оси ОХ
@@ -28,6 +42,9 @@ namespace laba1_test.Transforms
             _dy = ((_dy > 0) ? 1 : -1) * Convert.ToInt32(_tg * dx);
         }
 
+        /// <summary>
+        /// Метод для изменения положения фигуры
+        /// </summary>
         public void Transform()
         {
             Point leftTop = Shape.GetLeftTopConer();
@@ -68,13 +85,17 @@ namespace laba1_test.Transforms
                 dy = _dy;
             }
 
+            // смещение фигуры
             Shape.Offset(dx, dy);
         }
 
+        // фигурв
         public IShape Shape { set; get; }
+        // рамки области
         public int Height { set; get; }
         public int Width { set; get; }
 
+        // велечины шагов
         private int _dx;
         private int _dy;
         private double _tg;

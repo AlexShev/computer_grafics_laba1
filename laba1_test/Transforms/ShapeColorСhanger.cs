@@ -9,12 +9,16 @@ using System.Threading.Tasks;
 
 namespace laba1_test.Transforms
 {
+    /// <summary>
+    /// Класс для смены цвета линии фигуры
+    /// </summary>
     public class ShapeColorСhanger : IShapeTransformer
     {
-        private Color[] _colors;
-        private int _position;
-        private IShape _shape;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="shape">фигура у которой будет меняться цвет линии</param>
+        /// <param name="colors">цвета линии</param>
         public ShapeColorСhanger(IShape shape, Color[] colors)
         {
             _shape = shape;
@@ -22,12 +26,25 @@ namespace laba1_test.Transforms
             _position = 0;
         }
 
+        /// <summary>
+        /// Смена цвета
+        /// </summary>
         public void Transform()
         {
             _shape.LineColor = _colors[_position];
 
+            // зацикливание
             ++_position;
             _position %= _colors.Length;
         }
+        
+        // фигура
+        private IShape _shape;
+
+        // цвета линии
+        private Color[] _colors;
+        
+        // позиция цвета в массиве цветов
+        private int _position;
     }
 }

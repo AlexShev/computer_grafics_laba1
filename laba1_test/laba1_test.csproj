@@ -57,6 +57,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shapes\Rhomb.cs" />
+    <Compile Include="LoopingThread.cs" />
     <Compile Include="Transforms\IShapeTransformer.cs" />
     <Compile Include="Transforms\ShapeColorСhanger.cs" />
     <Compile Include="Transforms\ShapeMover.cs" />
