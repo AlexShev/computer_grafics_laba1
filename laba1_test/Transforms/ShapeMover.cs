@@ -15,12 +15,12 @@ namespace laba1_test.Transforms
         /// <param name="shape">Фигура, чья координата меняется</param>
         /// <param name="dx">Шаг по оси OX</param>
         /// <param name="angle">угол в градусах относительно оси OX</param>
-        public ShapeMover(IShape shape, int dx, int angle)
+        public ShapeMover(IShape shape, float dx, float angle)
         {
             _dx = dx;
             // расчёт изменения по Y
             _tg = Math.Tan(angle * Math.PI / 180);
-            _dy = Convert.ToInt32(_tg * Math.Abs(dx));
+            _dy = (float)(_tg * Math.Abs(dx));
 
             Shape = shape;
         }
@@ -39,7 +39,7 @@ namespace laba1_test.Transforms
             // Определение шага по оси ОУ
             // Если шаг был отрицательным, значит и новое значение будет отрицательным
             // Таким образом сохраняется направление движения
-            _dy = ((_dy > 0) ? 1 : -1) * Convert.ToInt32(_tg * dx);
+            _dy = (float)(((_dy > 0) ? 1 : -1) * (_tg * dx));
         }
 
         /// <summary>
@@ -47,9 +47,9 @@ namespace laba1_test.Transforms
         /// </summary>
         public void Transform()
         {
-            Point leftTop = Shape.GetLeftTopConer();
-            int dx = 0, dy = 0;
-            int height = Shape.GetHeight(), width = Shape.GetWidth();
+            PointF leftTop = Shape.GetLeftTopConer();
+            float dx = 0, dy = 0;
+            float height = Shape.GetHeight(), width = Shape.GetWidth();
 
             if (leftTop.X + _dx + width > Width) // Касание правой границы
             {
@@ -96,8 +96,8 @@ namespace laba1_test.Transforms
         public int Width { set; get; }
 
         // велечины шагов
-        private int _dx;
-        private int _dy;
+        private float _dx;
+        private float _dy;
         private double _tg;
     }
 }

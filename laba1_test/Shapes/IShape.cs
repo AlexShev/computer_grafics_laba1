@@ -6,22 +6,22 @@ namespace laba1_test.Shapes
     public interface IShape
     {
         // получить массив точек - задающих фигуру на плоскости
-        Point[] GetPoints();
+        PointF[] GetPoints();
         // получить высоту
-        int GetHeight();
+        float GetHeight();
         // получить ширину
-        int GetWidth();
+        float GetWidth();
         // Получить левый верхний угол (мамые наименьшие координаты) - может не быть частью фигуры
-        Point GetLeftTopConer();
+        PointF GetLeftTopConer();
 
         // Цвет фигуры внутри
         Color FillColor { get; set; }
         // Цвет граници фигуры
         Color LineColor { get; set; }
         // толщина линии
-        int LineWidth { get; set; }
+        float LineWidth { get; set; }
 
         // сместить фигуру на данный вектор
-        void Offset(int dx, int dy);
+        void Offset(float dx, float dy);
     }
 }

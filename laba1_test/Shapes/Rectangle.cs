@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace laba1_test.Shapes
 {
-    public class Rhomb : IShape
+    public class Rectangle : IShape
     {
         /// <summary>
         /// Ромб
@@ -12,50 +16,40 @@ namespace laba1_test.Shapes
         /// <param name="topY">координата Y левого угла прямоугольника, в который вписана фигурв</param>
         /// <param name="height">размер вертикальной диагонали</param>
         /// <param name="width">размер горизонтальной диоганали</param>
-        public Rhomb(float leftX, float topY, float height, float width)
+        public Rectangle(float leftX, float topY, float height, float width)
         {
             _leftTopConer = new PointF(leftX, topY);
             _height = height;
             _width = width;
 
-            _points = new PointF[Size];
+            _points = new PointF[SIZE];
 
             // расчёт остальных точек
-            CalcAnglePosition();
+            CalcPointPosition();
         }
 
         public PointF[] GetPoints() => _points;
-        public float GetHeight() => _height + _halfLineProjectionWidthOY * 2;
-        public float GetWidth() => _width + _halfLineProjectionWidthOX * 2;
+        public float GetHeight() => _height + _lineWidth;
+        public float GetWidth() => _width + _lineWidth;
         public PointF GetLeftTopConer() => _leftTopConer;
+
 
         public Color FillColor { get; set; }
         public Color LineColor { get; set; }
         public float LineWidth
         {
-            get => _lineWidth; 
-            
+            get => _lineWidth;
+
             set
             {
                 _lineWidth = value;
 
-                _halfLineProjectionWidthOY =
-                    _lineWidth / (float)Math.Pow(1.0/(1 + (_height * _height) / (_width * _width)), 0.5) / 2;
-
-                _halfLineProjectionWidthOX =
-                    _lineWidth / (float)Math.Pow(1.0 / (1 + (_width * _width) / (_height * _height)), 0.5) / 2;
-
-
                 // смещение всей фигуры на половину проекции ширены линии
-                _leftTopConer.X += _halfLineProjectionWidthOX;
-                _leftTopConer.Y += _halfLineProjectionWidthOY;
-                CalcAnglePosition();
-
-                // возвращение положения назад
-                _leftTopConer.X -= _halfLineProjectionWidthOX;
-                _leftTopConer.Y -= _halfLineProjectionWidthOY;
+                CalcPointPosition();
             }
         }
+
+
 
         public void Offset(float dx, float dy)
         {
@@ -64,31 +58,35 @@ namespace laba1_test.Shapes
             _leftTopConer.Y += dy;
 
             // перерасчёт остальных чисел
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < SIZE; i++)
             {
                 _points[i].X += dx;
                 _points[i].Y += dy;
             }
         }
 
-        // рерасчёт координат относительно левого верхнего угла
-        private void CalcAnglePosition()
+
+        // перасчёт координат относительно левого верхнего угла
+        private void CalcPointPosition()
         {
-            _points[0].X = _leftTopConer.X;
-            _points[0].Y = _leftTopConer.Y + _height / 2;
+            var halfLineWidth = _lineWidth / 2;
 
-            _points[1].X = _leftTopConer.X + _width / 2;
-            _points[1].Y = _leftTopConer.Y;
+            _points[0].X = _leftTopConer.X + halfLineWidth;
+            _points[0].Y = _leftTopConer.Y + halfLineWidth;
 
-            _points[2].X = _leftTopConer.X + _width;
-            _points[2].Y = _leftTopConer.Y + _height / 2;
+            _points[1].X = _points[0].X + _width;
+            _points[1].Y = _points[0].Y;
 
-            _points[3].X = _leftTopConer.X + _width / 2;
-            _points[3].Y = _leftTopConer.Y + _height;
+            _points[2].X = _points[1].X;
+            _points[2].Y = _points[1].Y + _height;
+
+            _points[3].X = _points[0].X;
+            _points[3].Y = _points[2].Y;
         }
 
+
         // количество точек
-        private const int Size = 4;
+        private const int SIZE = 4;
 
         // массив точек
         private readonly PointF[] _points;
@@ -100,10 +98,5 @@ namespace laba1_test.Shapes
         private float _height;
         private float _width;
         private float _lineWidth;
-
-
-        // половина проекции ширины линии на оси
-        private float _halfLineProjectionWidthOX;
-        private float _halfLineProjectionWidthOY;
     }
 }

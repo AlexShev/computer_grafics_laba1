@@ -27,7 +27,7 @@ namespace laba1_test
         }
 
         /// <summary>
-        /// Рисование области фигуры
+        /// Рисование заливки фигуры
         /// </summary>
         /// <param name="shape">фигура</param>
         public void FillShape(IShape shape)
@@ -99,7 +99,7 @@ namespace laba1_test
         /// <summary>
         /// Установка фона
         /// </summary>
-        public void SetDefalte()
+        public void SetDefault()
         {
             _filledPolygon?.Clear();
             _linePolygon?.Clear();
@@ -139,11 +139,24 @@ namespace laba1_test
                 // создание нового объекта графика
                 _grafic = Graphics.FromImage(_buffer);
                 // установка значий по умолчанию
-                SetDefalte();
+                SetDefault();
             }
 
             // возвращаем копию картинки
             get => new Bitmap(_buffer);
+        }
+
+        public void SetB(Bitmap value)
+        {
+            // закрытие старых ресурсов
+            _buffer?.Dispose();
+            _buffer = value;
+            _grafic?.Dispose();
+
+            // создание нового объекта графика
+            _grafic = Graphics.FromImage(_buffer);
+            // установка значий по умолчанию
+            SetDefault();
         }
 
         // карандаш

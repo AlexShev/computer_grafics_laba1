@@ -11,7 +11,7 @@ namespace laba1_test
     public partial class Form1 : Form
     {
         // фигура для отрисовки
-        private Rhomb _shape;
+        private IShape _shape;
         // объект ответсвенный за перемещение фигуры
         private ShapeMover _shapeMover;
         // объект ответственный за перекрашивание фигуры
@@ -36,14 +36,14 @@ namespace laba1_test
             InitializeComponent();
 
             // создание фигуры ромб в лквом в верхем углу с диагоналями 100
-            _shape = new Rhomb(0, 0, 100, 100);
+            _shape = new Shapes.Rectangle(0, 0, 400, 100);
             // задание своств фигуры для отображения
-            _shape.LineWidth = 4;
+            _shape.LineWidth = 10;
             _shape.FillColor = Color.RoyalBlue;
             _shape.LineColor = Color.Black;
 
             // объект для расчёта новых координат, ему необходимы знать размеры окна
-            _shapeMover = new ShapeMover(_shape, 10, 45);
+            _shapeMover = new ShapeMover(_shape, StepBar.Value, 60);
             _shapeMover.Height = pictureBox1.Height;
             _shapeMover.Width = pictureBox1.Width;
 
@@ -84,10 +84,10 @@ namespace laba1_test
                 _mutex.ReleaseMutex();
             });
 
-            _shapeMoverTread.PauseBetween = 20;
+            _shapeMoverTread.PauseBetween = 100 / speedBar.Value;
 
             // установка FPS
-            timer1.Interval = 1000 / (SpeedBar.Value * 10);
+            timer1.Interval = 1000 / (FPSbar.Value * 10);
         }
 
         // начало/остановка анимации
@@ -123,12 +123,18 @@ namespace laba1_test
         // изменение FPS картинки
         private void Sp_Scroll(object sender, EventArgs e)
         {
-            timer1.Interval = 1000 / (SpeedBar.Value * 10);
+            // 1000 / x*10 = 100 / x
+            timer1.Interval = 100 / FPSbar.Value;
         }
 
         private void Dx_Scroll(object sender, EventArgs e)
         {
             _shapeMover.SetStep(StepBar.Value);
+        }
+
+        private void SpeedBar_Scroll(object sender, EventArgs e)
+        {
+            _shapeMoverTread.PauseBetween = 100 / speedBar.Value;
         }
 
         // реагирование на изменение размера формы
@@ -143,7 +149,7 @@ namespace laba1_test
             {
                 // задаём новый битмат и отрисовываем, что есть на данный момент
                 _graphicsEngine.Bitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-                _graphicsEngine.SetDefalte();
+                _graphicsEngine.SetDefault();
 
                 _graphicsEngine.FillShape(_shape);
                 _graphicsEngine.DrowShape(_shape);
