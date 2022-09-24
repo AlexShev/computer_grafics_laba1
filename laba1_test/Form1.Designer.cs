@@ -94,7 +94,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(111, 156);
+            this.label2.Location = new System.Drawing.Point(111, 143);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(25, 20);
             this.label2.TabIndex = 5;
@@ -104,7 +104,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(111, 246);
+            this.label1.Location = new System.Drawing.Point(103, 230);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(40, 20);
             this.label1.TabIndex = 4;
@@ -123,7 +123,7 @@
             // 
             // StepBar
             // 
-            this.StepBar.Location = new System.Drawing.Point(23, 184);
+            this.StepBar.Location = new System.Drawing.Point(23, 166);
             this.StepBar.Minimum = 1;
             this.StepBar.Name = "StepBar";
             this.StepBar.Size = new System.Drawing.Size(203, 45);
@@ -134,14 +134,14 @@
             // FPSbar
             // 
             this.FPSbar.LargeChange = 1;
-            this.FPSbar.Location = new System.Drawing.Point(23, 278);
-            this.FPSbar.Maximum = 6;
-            this.FPSbar.Minimum = 3;
+            this.FPSbar.Location = new System.Drawing.Point(23, 253);
+            this.FPSbar.Maximum = 3;
+            this.FPSbar.Minimum = 1;
             this.FPSbar.Name = "FPSbar";
             this.FPSbar.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.FPSbar.Size = new System.Drawing.Size(203, 45);
             this.FPSbar.TabIndex = 2;
-            this.FPSbar.Value = 4;
+            this.FPSbar.Value = 3;
             this.FPSbar.Scroll += new System.EventHandler(this.Sp_Scroll);
             // 
             // pictureBox1

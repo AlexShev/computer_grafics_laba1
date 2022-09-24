@@ -36,14 +36,14 @@ namespace laba1_test
             InitializeComponent();
 
             // создание фигуры ромб в лквом в верхем углу с диагоналями 100
-            _shape = new Shapes.Rectangle(0, 0, 400, 100);
+            _shape = new Shapes.Rectangle(0, 0, 100, 200);
             // задание своств фигуры для отображения
             _shape.LineWidth = 10;
             _shape.FillColor = Color.RoyalBlue;
             _shape.LineColor = Color.Black;
 
             // объект для расчёта новых координат, ему необходимы знать размеры окна
-            _shapeMover = new ShapeMover(_shape, StepBar.Value, 60);
+            _shapeMover = new ShapeMover(_shape, StepBar.Value, 30);
             _shapeMover.Height = pictureBox1.Height;
             _shapeMover.Width = pictureBox1.Width;
 
@@ -87,7 +87,7 @@ namespace laba1_test
             _shapeMoverTread.PauseBetween = 100 / speedBar.Value;
 
             // установка FPS
-            timer1.Interval = 1000 / (FPSbar.Value * 10);
+            timer1.Interval = 1000 / (FPSbar.Value * 15);
         }
 
         // начало/остановка анимации
@@ -123,8 +123,8 @@ namespace laba1_test
         // изменение FPS картинки
         private void Sp_Scroll(object sender, EventArgs e)
         {
-            // 1000 / x*10 = 100 / x
-            timer1.Interval = 100 / FPSbar.Value;
+            // 1000 / x*15 = 200 / 3x
+            timer1.Interval = 200 / (FPSbar.Value * 5);
         }
 
         private void Dx_Scroll(object sender, EventArgs e)
@@ -138,7 +138,7 @@ namespace laba1_test
         }
 
         // реагирование на изменение размера формы
-        private void Form1_Resize(object sender, System.EventArgs e)
+        private void Form1_Resize(object sender, EventArgs e)
         {
             Control control = (Control)sender;
             pictureBox1.Height = control.Height;
