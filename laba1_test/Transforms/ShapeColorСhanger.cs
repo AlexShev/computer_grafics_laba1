@@ -1,11 +1,5 @@
 ﻿using laba1_test.Shapes;
-using laba1_test.Transforms;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace laba1_test.Transforms
 {
@@ -37,13 +31,13 @@ namespace laba1_test.Transforms
             ++_position;
             _position %= _colors.Length;
         }
-        
+
         // фигура
         private IShape _shape;
 
         // цвета линии
         private Color[] _colors;
-        
+
         // позиция цвета в массиве цветов
         private int _position;
     }

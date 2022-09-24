@@ -35,7 +35,7 @@ namespace laba1_test
         {
             InitializeComponent();
 
-            // создание фигуры ромб в лквом в верхем углу с диагоналями 100
+            // создание фигуры ромб в лквом в верхем углу с высотой 100 и шиоиной 200
             _shape = new Shapes.Rectangle(0, 0, 100, 200);
             // задание своств фигуры для отображения
             _shape.LineWidth = 10;
@@ -43,7 +43,7 @@ namespace laba1_test
             _shape.LineColor = Color.Black;
 
             // объект для расчёта новых координат, ему необходимы знать размеры окна
-            _shapeMover = new ShapeMover(_shape, StepBar.Value, 30);
+            _shapeMover = new ShapeMover(_shape, StepBar.Value, 45);
             _shapeMover.Height = pictureBox1.Height;
             _shapeMover.Width = pictureBox1.Width;
 
@@ -124,7 +124,7 @@ namespace laba1_test
         private void Sp_Scroll(object sender, EventArgs e)
         {
             // 1000 / x*15 = 200 / 3x
-            timer1.Interval = 200 / (FPSbar.Value * 5);
+            timer1.Interval = 200 / (FPSbar.Value * 3);
         }
 
         private void Dx_Scroll(object sender, EventArgs e)

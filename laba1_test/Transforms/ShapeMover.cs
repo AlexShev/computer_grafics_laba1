@@ -22,7 +22,7 @@ namespace laba1_test.Transforms
             _tg = Math.Tan(angle * Math.PI / 180);
             _dy = (float)(_tg * Math.Abs(dx));
 
-            Shape = shape;
+            _shape = shape;
         }
 
         /// <summary>
@@ -47,9 +47,9 @@ namespace laba1_test.Transforms
         /// </summary>
         public void Transform()
         {
-            PointF leftTop = Shape.GetLeftTopConer();
+            PointF leftTop = _shape.GetLeftTopConer();
             float dx = 0, dy = 0;
-            float height = Shape.GetHeight(), width = Shape.GetWidth();
+            float height = _shape.GetHeight(), width = _shape.GetWidth();
 
             if (leftTop.X + _dx + width > Width) // Касание правой границы
             {
@@ -68,13 +68,13 @@ namespace laba1_test.Transforms
                 dx = _dx;
             }
 
-            if (leftTop.Y + _dy + height > Height) // Касание правой границы
+            if (leftTop.Y + _dy + height > Height) // Касание нижней границы
             {
                 dy = Height - (leftTop.Y + _dy + height);
 
                 _dy *= -1;
             }
-            else if (leftTop.Y + _dy < 0) // Касание левой границы
+            else if (leftTop.Y + _dy < 0) // Касание верхней границы
             {
                 _dy *= -1;
 
@@ -86,14 +86,15 @@ namespace laba1_test.Transforms
             }
 
             // смещение фигуры
-            Shape.Offset(dx, dy);
+            _shape.Offset(dx, dy);
         }
 
-        // фигурв
-        public IShape Shape { set; get; }
         // рамки области
         public int Height { set; get; }
         public int Width { set; get; }
+
+        // фигура
+        private IShape _shape;
 
         // велечины шагов
         private float _dx;

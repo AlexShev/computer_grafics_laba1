@@ -64,7 +64,7 @@ namespace laba1_test
         private void ClearRegion(IShape shape)
         {
             _brush.Color = BackColor;
-            
+
             _grafic.FillPolygon(_brush, shape.GetPoints());
         }
 
@@ -89,7 +89,7 @@ namespace laba1_test
             {
                 ClearRegion(_filledPolygon.Pop());
             }
-            
+
             while (_linePolygon.Count > 0)
             {
                 ClearLine(_linePolygon.Pop());
@@ -122,7 +122,7 @@ namespace laba1_test
         /// Цвет фона (по умолчанию белый)
         /// </summary>
         public Color BackColor { set; get; } = Color.White;
-        
+
         /// <summary>
         /// Свойство картинки
         /// </summary>
@@ -144,19 +144,6 @@ namespace laba1_test
 
             // возвращаем копию картинки
             get => new Bitmap(_buffer);
-        }
-
-        public void SetB(Bitmap value)
-        {
-            // закрытие старых ресурсов
-            _buffer?.Dispose();
-            _buffer = value;
-            _grafic?.Dispose();
-
-            // создание нового объекта графика
-            _grafic = Graphics.FromImage(_buffer);
-            // установка значий по умолчанию
-            SetDefault();
         }
 
         // карандаш
